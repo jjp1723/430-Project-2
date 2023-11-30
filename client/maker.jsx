@@ -7,20 +7,18 @@ const handleMedia = (e) => {
     helper.hideError();
 
     const name = e.target.querySelector('#mediaName').value;
-    const age = e.target.querySelector('#mediaAge').value;
-    const weight = e.target.querySelector('#mediaWeight').value;
 
-    if(!name || !age || !weight){
-        helper.handleError('All fields are required!');
+    if(!name){
+        helper.handleError('Please provide a name for the file');
         return false;
     }
 
-    helper.sendPost(e.target.action, {name, age, weight}, loadMediaFromServer);
+    helper.sendPost(e.target.action, new FormData(e.target), loadMediaFromServer);
 
     return false;
 };
 
-const MomoForm = (props) => {
+const MediaForm = (props) => {
     return(
         <form id='mediaForm'
             name='mediaForm'
@@ -31,10 +29,7 @@ const MomoForm = (props) => {
                 
             <label htmlFor='name'>Name: </label>
             <input id='mediaName' type='text' name='name' placeholder='Media Name'/>
-            <label htmlFor='age'>Age: </label>
-            <input id='mediaAge' type='number' min='0' name='age'/>
-            <label htmlFor='weight'>Weight: </label>
-            <input id='mediaWeight' type='number' min='0' name='weight'/>
+            <input type='file' name='uploadFile'/>
             <input className='makeMediaSubmit' type='submit' value='Make Media'/>
         </form>
     );
@@ -53,9 +48,9 @@ const MediaList = (props) => {
         return(
             <div key={media._id} className='media'>
                 <h3 className='mediaName' id='mediaName'> Name: {media.name} </h3>
-                <h3 className='mediaAge' id='mediaAge'> Age: {media.age} </h3>
-                <h3 className='mediaWeight' id='mediaWeight'> Weight: {media.weight} </h3>
-                <button className='deleteMediaSubmit' type='button' value='Delete Media' onClick={() => deleteMediaFromServer(media)}>Delete Media</button>
+                <h3 className='mediaSize' id='mediaSize'> Size: {media.size} </h3>
+                <h3 className='mediaUploaded' id='mediaUploaded'> Date Uploaded: {media.uploadedDate} </h3>
+                <button className='deleteMediaSubmit' type='button' value='Delete Media' onClick={() => deleteMediaFromServer(media)}>X</button>
             </div>
         );
     });
@@ -67,12 +62,14 @@ const MediaList = (props) => {
     );
 };
 
+// loadMediaFromServer Function - Loads all of a user's uploaded media
 const loadMediaFromServer = async () => {
     const response = await fetch('/getMedia');
     const data = await response.json();
     ReactDOM.render(<MediaList media={data.media}/>, document.getElementById('media'));
 };
 
+// deleteMediaFromServer Function - Deletes a specific media entry from the database
 const deleteMediaFromServer = async (media) => {
     const response = await fetch('/deleteMedia', {method: 'DELETE', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(media)});
     if(response.status === 201){
@@ -80,8 +77,15 @@ const deleteMediaFromServer = async (media) => {
     }
 }
 
+// To-Do: Create a function to be called from a specific entry akin to deleteMediaFromServer
+//  which allows users to toggle whether their media will be publically viewable in the explore tab
+
+// const toggleMediaPublic = async (media) => {
+
+// };
+
 const init = () => {
-    ReactDOM.render(<MomoForm/>, document.getElementById('makeMedia'));
+    ReactDOM.render(<MediaForm/>, document.getElementById('makeMedia'));
 
     ReactDOM.render(<MediaList media={[]}/>, document.getElementById('media'));
 

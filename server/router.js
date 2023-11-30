@@ -15,6 +15,12 @@ const router = (app) => {
   app.get('/maker', mid.requiresLogin, controllers.Media.makerPage);
   app.post('/maker', mid.requiresLogin, controllers.Media.makeMedia);
 
+  app.get('/explore', mid.requiresSecure, mid.requiresLogin, controllers.Media.explorePage);
+
+  app.get('/account', mid.requiresSecure, mid.requiresLogin, controllers.Account.accountPage);
+  app.post('/change', mid.requiresSecure, mid.requiresLogin, controllers.Account.change);
+  app.post('/premium', mid.requiresSecure, mid.requiresLogin, controllers.Account.premium);
+
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
 };
 

@@ -10,12 +10,15 @@ const MediaSchema = new mongoose.Schema({
     trim: true,
     set: setname,
   },
-  age: {
-    type: Number,
-    min: 0,
+  description: {
+    type: String,
+    trim: true,
+  },
+  data: {
+    type: Buffer,
     required: true,
   },
-  weight: {
+  size: {
     type: Number,
     min: 0,
     required: true,
@@ -25,7 +28,15 @@ const MediaSchema = new mongoose.Schema({
     required: true,
     ref: 'Account',
   },
-  createdDate: {
+  mimetype: {
+    type: String,
+    required: true,
+  },
+  md5: {
+    type: String,
+    required: true,
+  },
+  uploadedDate: {
     type: Date,
     default: Date.now,
   },
@@ -33,8 +44,12 @@ const MediaSchema = new mongoose.Schema({
 
 MediaSchema.statics.toAPI = (doc) => ({
   name: doc.name,
-  age: doc.age,
-  weight: doc.weight,
+  description: doc.description,
+  data: doc.data,
+  size: doc.size,
+  mimetype: doc.mimetype,
+  md5: doc.md5,
+  uploadedDate: doc.uploadedDate,
 });
 
 const MediaModel = mongoose.model('Media', MediaSchema);
