@@ -10,6 +10,7 @@ const helmet = require('helmet');
 const session = require('express-session');
 const RedisStore = require('connect-redis').default;
 const redis = require('redis');
+const fileupload = require('express-fileupload');
 
 const router = require('./router.js');
 
@@ -36,6 +37,7 @@ redisClient.connect().then(() => {
   app.use('/assets', express.static(path.resolve(`${__dirname}/../hosted/`)));
   app.use(favicon(`${__dirname}/../hosted/img/favicon.png`));
   app.use(compression());
+  app.use(fileupload());
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
 

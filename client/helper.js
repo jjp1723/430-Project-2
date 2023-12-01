@@ -31,6 +31,28 @@ const sendPost = async (url, data, handler) => {
     }
 };
 
+const sendFile = async (url, data, handler) => {
+    const response = await fetch(url, {
+        method: 'POST',
+        body: data,
+    });
+
+    const result = await response.json();
+    document.getElementById('mediaMessage').classList.add('hidden');
+
+    if(result.redirect) {
+        window.location = result.redirect;
+    }
+
+    if(result.error) {
+        handleError(result.error);
+    }
+
+    if(handler){
+        handler(result);
+    }
+};
+
 const hideError = () => {
     document.getElementById('mediaMessage').classList.add('hidden');
 };
@@ -38,5 +60,6 @@ const hideError = () => {
 module.exports = {
     handleError,
     sendPost,
+    sendFile,
     hideError,
 };

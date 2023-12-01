@@ -6,14 +6,7 @@ const handleMedia = (e) => {
     e.preventDefault();
     helper.hideError();
 
-    const name = e.target.querySelector('#mediaName').value;
-
-    if(!name){
-        helper.handleError('Please provide a name for the file');
-        return false;
-    }
-
-    helper.sendPost(e.target.action, new FormData(e.target), loadMediaFromServer);
+    helper.sendFile(e.target.action, new FormData(e.target), loadMediaFromServer);
 
     return false;
 };
@@ -25,12 +18,18 @@ const MediaForm = (props) => {
             onSubmit={handleMedia}
             action='/maker'
             method='POST'
+            encType="multipart/form-data"
             className='mediaForm'>
                 
-            <label htmlFor='name'>Name: </label>
-            <input id='mediaName' type='text' name='name' placeholder='Media Name'/>
             <input type='file' name='uploadFile'/>
-            <input className='makeMediaSubmit' type='submit' value='Make Media'/>
+            <label htmlFor='description'>Description (Optional): </label>
+            <input id='mediaDescription' type='text' name='description' placeholder='Media Description'/>
+            <label htmlFor='visibility'>Visibility: </label>
+            <select id='mediaVisibility' type='select' name='visibility'>
+                <option value='private' selected>Private</option>
+                <option value='public'>Public</option>
+            </select>
+            <input className='makeMediaSubmit' type='submit' value='Upload Media'/>
         </form>
     );
 };
@@ -48,8 +47,10 @@ const MediaList = (props) => {
         return(
             <div key={media._id} className='media'>
                 <h3 className='mediaName' id='mediaName'> Name: {media.name} </h3>
-                <h3 className='mediaSize' id='mediaSize'> Size: {media.size} </h3>
+                <h3 className='mediaSize' id='mediaSize'> Size: {media.size} Bytes</h3>
                 <h3 className='mediaUploaded' id='mediaUploaded'> Date Uploaded: {media.uploadedDate} </h3>
+                <h3 className='mediaDescription' id='mediaDescription'> Description: {media.description} </h3>
+                <h3 className='mediaVisibility' id='mediaVisibility'> Visibility: {media.public} </h3>
                 <button className='deleteMediaSubmit' type='button' value='Delete Media' onClick={() => deleteMediaFromServer(media)}>X</button>
             </div>
         );

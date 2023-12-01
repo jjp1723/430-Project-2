@@ -6,24 +6,38 @@ const makerPage = async (req, res) => res.render('app');
 const explorePage = async (req, res) => res.render('explore');
 
 const makeMedia = async (req, res) => {
+  console.log(req.body.description);
   if (!req.files || !req.files.uploadFile || Object.keys(req.files).length === 0) {
     return res.status(400).json({ error: 'No file selected' });
   }
 
+  let desc = req.body.description;
+
+  if(!desc){
+    desc = 'No description provided';
+  }
+
   const mediaData = {
-    name: req.body.name,
-    file: req.files.uploadFile,
     owner: req.session.account._id,
+    name: req.files.uploadFile.name,
+    data: req.files.uploadFile.data,
+    size: req.files.uploadFile.size,
+    mimetype: req.files.uploadFile.mimetype,
+    md5: req.files.uploadFile.md5,
+    description: desc,
+    public: (req.body.public === 'public'),
   };
+
+  console.log(mediaData);
 
   try {
     const newMedia = new Media(mediaData);
     const doc = await newMedia.save();
     return res.status(201).json({
       message: 'File Stored Successfully',
-      name: doc.name,
-      age: doc.age,
-      weight: newMedia.weight,
+      file: newMedia.file,
+      description: doc.description,
+      public: doc.public,
     });
   } catch (err) {
     console.log(err);
@@ -37,7 +51,7 @@ const makeMedia = async (req, res) => {
 const getMedia = async (req, res) => {
   try {
     const query = { owner: req.session.account._id };
-    const docs = await Media.find(query).select('name age weight').lean().exec();
+    const docs = await Media.find(query).select('name size description uploadedDate public').lean().exec();
 
     return res.json({ media: docs });
   } catch (err) {

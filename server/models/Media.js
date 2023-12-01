@@ -40,6 +40,10 @@ const MediaSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  public:{
+    type:Boolean,
+    required:true,
+  }
 });
 
 MediaSchema.statics.toAPI = (doc) => ({
@@ -50,6 +54,7 @@ MediaSchema.statics.toAPI = (doc) => ({
   mimetype: doc.mimetype,
   md5: doc.md5,
   uploadedDate: doc.uploadedDate,
+  public: doc.public,
 });
 
 const MediaModel = mongoose.model('Media', MediaSchema);
