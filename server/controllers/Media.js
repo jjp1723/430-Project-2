@@ -59,7 +59,7 @@ const makeMedia = async (req, res) => {
 const getMedia = async (req, res) => {
   try {
     const query = { owner: req.session.account._id };
-    const docs = await Media.find(query).select('name size description uploadedDate public').lean().exec();
+    const docs = await Media.find(query).select('name size description uploadedDate public mimetype data').lean().exec();
 
     return res.json({ media: docs });
   } catch (err) {
@@ -67,6 +67,18 @@ const getMedia = async (req, res) => {
     return res.status(500).json({ error: 'Error retrieving media!' });
   }
 };
+
+const getPublicMedia = async (req, res) => {
+  try{
+    const query = { public: true };
+    const docs = await Media.find(query).select('name description uploadedDate mimetype data').lean().exec();
+
+    return res.json({media:docs});
+  } catch(err) {
+    console.log(err);
+    return res.status(500).json({error: 'Error retreiving public media!'});
+  }
+}
 
 const deleteMedia = async (req, res) => {
   try {
@@ -78,10 +90,22 @@ const deleteMedia = async (req, res) => {
   }
 };
 
+const toggleVisibility = async (req, res) => {
+  try{
+    const media = await Media.findOneAndUpdate({_id: req.body._id}, {public: !req.body.public});
+    return res.status(201).json({ media });
+  } catch(err){
+    console.log(err);
+    return res.status(500).json({error:'Error changing visibility'});
+  }
+}
+
 module.exports = {
   makerPage,
   makeMedia,
   getMedia,
   deleteMedia,
   explorePage,
+  toggleVisibility,
+  getPublicMedia,
 };

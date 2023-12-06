@@ -52,13 +52,19 @@ const MediaList = (props) => {
             visibility = 'Private';
         }
 
+        let datastring = `data:${media.mimetype};base64,` + media.data.toString('base64');
+
         return(
             <div key={media._id} className='media'>
+                <img src={datastring} />
                 <h3 className='mediaName' id='mediaName'> Name: {media.name} </h3>
                 <h3 className='mediaSize' id='mediaSize'> Size: {media.size} Bytes</h3>
                 <h3 className='mediaUploaded' id='mediaUploaded'> Date Uploaded: {media.uploadedDate} </h3>
                 <h3 className='mediaDescription' id='mediaDescription'> Description: {media.description} </h3>
-                <h3 className='mediaVisibility' id='mediaVisibility'> Visibility: {visibility} </h3>
+                <h3 className='mediaVisibility' id='mediaVisibility'> 
+                    Visibility: {visibility}
+                    <button className='toggleVisibility' type='button' value='Toggle Visibility' onClick={() => toggleMediaVisibility(media)}>Toggle Visibility</button>
+                </h3>
                 <button className='deleteMediaSubmit' type='button' value='Delete Media' onClick={() => deleteMediaFromServer(media)}>X</button>
             </div>
         );
@@ -89,9 +95,12 @@ const deleteMediaFromServer = async (media) => {
 // To-Do: Create a function to be called from a specific entry akin to deleteMediaFromServer
 //  which allows users to toggle whether their media will be publically viewable in the explore tab
 
-// const toggleMediaPublic = async (media) => {
-
-// };
+const toggleMediaVisibility = async (media) => {
+    const response = await fetch('/toggleMedia', {method: 'POST', headers:{'Content-Type': 'application/json'}, body: JSON.stringify(media)});
+    if(response.status === 201){
+        loadMediaFromServer();
+    }
+};
 
 const init = () => {
     ReactDOM.render(<MediaForm/>, document.getElementById('makeMedia'));

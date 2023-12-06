@@ -123,6 +123,10 @@ const premium = async (req, res) => {
   }
 };
 
+const getUsers = async(req, res) => {
+
+}
+
 module.exports = {
   loginPage,
   login,
@@ -131,4 +135,5 @@ module.exports = {
   change,
   premium,
   accountPage,
+  getUsers,
 };
