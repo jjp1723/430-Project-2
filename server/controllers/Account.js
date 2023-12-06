@@ -87,11 +87,18 @@ const change = async (req, res) => {
 
   // To-Do: Update the password associated with the user currently logged in
   try {
-    // const hash = await Account.generateHash(passNew1);
-    // const newAccount = new Account({ username: req.session.account, password: hash });
-    // await newAccount.save();
-    // req.session.account = Account.toAPI(newAccount);
-    return res.status(201).json({ message: 'Password Change Successful' });
+    return Account.authenticate(req.session.account.username, passOld, async (err, account) => {
+      // Ensure the provided old password matches the current password
+      if (err || !account) {
+        return res.status(401).json({ error: 'Old password is not correct!' });
+      }
+      
+      
+      const hash = await Account.generateHash(passNew1);
+      await Account.findOneAndUpdate({_id: req.session.account._id}, {password:hash});
+  
+      return res.status(201).json({ redirect: '/account', message: 'Password Change Successful' });
+    });
   } catch (err) {
     console.log(err);
     if (err.code === 11000) {
@@ -113,6 +120,7 @@ const premium = async (req, res) => {
 
   // To-Do: Toggle the 'premium' status of the current user account
   try {
+    await Account.findOneAndUpdate({_id: req.session.account._id}, {premium: activate});
     return res.status(201).json({ message: 'Premium status toggled' });
   } catch (err) {
     console.log(err);
@@ -124,7 +132,24 @@ const premium = async (req, res) => {
 };
 
 const getUsers = async(req, res) => {
+  try{
+    const users = await Account.find({}).select('_id username').lean().exec();
+    return res.json({ users: users });
+  } catch(err){
+    console.log(err);
+    return res.status(500).json({error:'Error changing visibility'});
+  }
+}
 
+const deleteAccount = async(req, res) => {
+  console.log('deleteAccount');
+  try {
+    const deleted = await Account.findByIdAndDelete({ _id: req.session.account._id });
+    return res.status(201).json({ redirect: '/logout', deleted });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: 'Error deleting account!' });
+  }
 }
 
 module.exports = {
@@ -136,4 +161,5 @@ module.exports = {
   premium,
   accountPage,
   getUsers,
+  deleteAccount,
 };

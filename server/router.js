@@ -6,6 +6,7 @@ const router = (app) => {
   app.get('/getPublic', mid.requiresLogin, controllers.Media.getPublicMedia);
   app.delete('/deleteMedia', mid.requiresLogin, controllers.Media.deleteMedia);
   app.post('/toggleMedia', mid.requiresLogin, controllers.Media.toggleVisibility);
+  app.delete('/nuke', mid.requiresLogin, controllers.Media.nuke)
 
   app.get('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
   app.post('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.login);
@@ -23,6 +24,7 @@ const router = (app) => {
   app.post('/change', mid.requiresSecure, mid.requiresLogin, controllers.Account.change);
   app.post('/premium', mid.requiresSecure, mid.requiresLogin, controllers.Account.premium);
   app.get('/getUsers', mid.requiresSecure, mid.requiresLogin, controllers.Account.getUsers);
+  app.delete('/deleteAccount', mid.requiresSecure, mid.requiresLogin, controllers.Account.deleteAccount);
 
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
 };

@@ -47,6 +47,24 @@ const handlePremium = (e) => {
     return false;
 }
 
+// handleNuke function - Handles submission from the NukeWindow
+const handleNuke = async (e) => {
+    e.preventDefault();
+    helper.hideError();
+
+    // Getting the current 'checked' status of the checkbox
+    if(!e.target.querySelector('#confirmBox').checked){
+        helper.handleError('You must confirm your choice to delete your account!');
+    }
+
+    // Sends the status of the checkbox in a post request through helper
+    await fetch(e.target.action, {method: 'DELETE', headers: {'Content-Type': 'application/json'}});
+    await fetch('/deleteAccount', {method: 'DELETE', headers: {'Content-Type': 'application/json'}});
+    // await fetch('/login', {method: 'GET', headers: {'Content-Type': 'application/json'}});
+
+    return false;
+}
+
 // PasswordWindow - Renders a form the user utilizes to change their password
 const PasswordWindow = (props) => {
     return(
@@ -81,15 +99,35 @@ const PremiumWindow = (props) => {
             <p>Users with a premium account get access to premium benefits, which include a further 10GB of upload storage and zero ads!</p>
             <label htmlFor='premiumBox'>Enable Premium Benefits: </label>
             <input id='premiumBox' type='checkbox' name='premiumBox'/>
-            <input className='formSubmit' type='submit' value='Password Change'/>
+            <input className='formSubmit' type='submit' value='Update'/>
         </form>
     );
 };
 
-// Init Function - Renders both PassWordWindow and PremiumWindow to the page
+// NukeWindow - Renders a form the user utilizes to delete their account
+const NukeWindow = (props) => {
+    return(
+        <form id='nukeForm'
+            name='nukeForm'
+            onSubmit={handleNuke}
+            action='/nuke'
+            method='DELETE'
+            className='mainForm'>
+                
+            <h3>Want to Delete Your Account?</h3>
+            <p>Warning: Deleting your account will also delete everything you've ever uploaded. There is no going back.</p>
+            <label htmlFor='confirmBox'>I understand: </label>
+            <input id='confirmBox' type='checkbox' name='confirmBox'/>
+            <input className='formSubmit' type='submit' value='Nuke'/>
+        </form>
+    );
+};
+
+// Init Function - Renders both PasswordWindow, PremiumWindow, and NukeWindow to the page
 const init = () => {
     ReactDOM.render(<PasswordWindow/>, document.getElementById('change'));
     ReactDOM.render(<PremiumWindow/>, document.getElementById('premium'));
+    ReactDOM.render(<NukeWindow/>, document.getElementById('nuke'));
 };
 
 window.onload = init;

@@ -71,7 +71,7 @@ const getMedia = async (req, res) => {
 const getPublicMedia = async (req, res) => {
   try{
     const query = { public: true };
-    const docs = await Media.find(query).select('name description uploadedDate mimetype data').lean().exec();
+    const docs = await Media.find(query).select('name description uploadedDate mimetype data owner').lean().exec();
 
     return res.json({media:docs});
   } catch(err) {
@@ -100,6 +100,17 @@ const toggleVisibility = async (req, res) => {
   }
 }
 
+const nuke = async (req, res) => {
+  console.log('nuke');
+  try {
+    const deleted = await Media.deleteMany({ owner: req.session.account._id });
+    return res.status(201).json({ deleted });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: 'Error deleting media!' });
+  }
+};
+
 module.exports = {
   makerPage,
   makeMedia,
@@ -108,4 +119,5 @@ module.exports = {
   explorePage,
   toggleVisibility,
   getPublicMedia,
+  nuke,
 };

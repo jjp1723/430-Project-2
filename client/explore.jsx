@@ -15,12 +15,20 @@ const ExploreList = (props) => {
         );
     }
 
+    let datastring;
+
+    let owners = [];
+    props.users.map(user => {
+        owners[user._id] = user.username;
+    });
+
     const mediaNodes = props.media.map(media => {
-        let datastring = `data:${media.mimetype};base64,` + media.data.toString('base64');
+        datastring = `data:${media.mimetype};base64,` + media.data.toString('base64');
 
         return(
             <div key={media._id} className='media'>
                 <img src={datastring} />
+                <h3 className='mediaOwner' id='mediaOwner'> Uploader: {owners[media.owner]} </h3>
                 <h3 className='mediaName' id='mediaName'> Name: {media.name} </h3>
                 <h3 className='mediaUploaded' id='mediaUploaded'> Date Uploaded: {media.uploadedDate} </h3>
                 <h3 className='mediaDescription' id='mediaDescription'> Description: {media.description} </h3>
@@ -35,8 +43,7 @@ const ExploreList = (props) => {
     );
 };
 
-// To-Do: Replace loadMediaFromServer Function with a function that makes a fetch request to
-//  ALL media currently in the database
+// loadMediaFromServer function - Loads all public media from the server as well as account usernames
 const loadMediaFromServer = async () => {
     const mediaResponse = await fetch('/getPublic');
     const mediaData = await mediaResponse.json();
