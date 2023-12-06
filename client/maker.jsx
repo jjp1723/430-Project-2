@@ -29,7 +29,7 @@ const MediaForm = (props) => {
                 <option value='private' selected>Private</option>
                 <option value='public'>Public</option>
             </select>
-            <input className='makeMediaSubmit' type='submit' value='Upload Media'/>
+            <input className='makeMediaSubmit' type='submit' value='Upload Image'/>
         </form>
     );
 };
@@ -43,14 +43,22 @@ const MediaList = (props) => {
         );
     }
 
+    let visibility;
+
     const mediaNodes = props.media.map(media => {
+        if(media.public){
+            visibility = 'Public';
+        } else {
+            visibility = 'Private';
+        }
+
         return(
             <div key={media._id} className='media'>
                 <h3 className='mediaName' id='mediaName'> Name: {media.name} </h3>
                 <h3 className='mediaSize' id='mediaSize'> Size: {media.size} Bytes</h3>
                 <h3 className='mediaUploaded' id='mediaUploaded'> Date Uploaded: {media.uploadedDate} </h3>
                 <h3 className='mediaDescription' id='mediaDescription'> Description: {media.description} </h3>
-                <h3 className='mediaVisibility' id='mediaVisibility'> Visibility: {media.public} </h3>
+                <h3 className='mediaVisibility' id='mediaVisibility'> Visibility: {visibility} </h3>
                 <button className='deleteMediaSubmit' type='button' value='Delete Media' onClick={() => deleteMediaFromServer(media)}>X</button>
             </div>
         );

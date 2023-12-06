@@ -17,6 +17,13 @@ const makeMedia = async (req, res) => {
     desc = 'No description provided';
   }
 
+  let mime = req.files.uploadFile.mimetype;
+
+  if(!mime.includes('image/'))
+  {
+    return res.status(400).json({ error: 'Selected file is not an image' });
+  }
+
   const mediaData = {
     owner: req.session.account._id,
     name: req.files.uploadFile.name,
@@ -25,9 +32,10 @@ const makeMedia = async (req, res) => {
     mimetype: req.files.uploadFile.mimetype,
     md5: req.files.uploadFile.md5,
     description: desc,
-    public: (req.body.public === 'public'),
+    public: (req.body.visibility === 'public'),
   };
 
+  console.log(req.body.visibility);
   console.log(mediaData);
 
   try {
