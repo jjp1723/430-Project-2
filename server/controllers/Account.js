@@ -2,6 +2,9 @@ const models = require('../models');
 
 const { Account } = models;
 
+const MAX_STANDARD_STORAGE = 64000000;
+const MAX_PREMIUM_STORAGE = 256000000;
+
 // Render functions for the login and account pages
 const loginPage = (req, res) => res.render('login');
 const accountPage = (req, res) => res.render('account');
@@ -85,18 +88,17 @@ const change = async (req, res) => {
     return res.status(400).json({ error: 'Passwords do not match!' });
   }
 
-  // To-Do: Update the password associated with the user currently logged in
+  // Update the password associated with the user currently logged in
   try {
     return Account.authenticate(req.session.account.username, passOld, async (err, account) => {
       // Ensure the provided old password matches the current password
       if (err || !account) {
         return res.status(401).json({ error: 'Old password is not correct!' });
       }
-      
-      
+
       const hash = await Account.generateHash(passNew1);
-      await Account.findOneAndUpdate({_id: req.session.account._id}, {password:hash});
-  
+      await Account.findOneAndUpdate({ _id: req.session.account._id }, { password: hash });
+
       return res.status(201).json({ redirect: '/account', message: 'Password Change Successful' });
     });
   } catch (err) {
@@ -118,9 +120,9 @@ const premium = async (req, res) => {
     return res.status(400).json({ error: 'How did this happen!?' });
   }
 
-  // To-Do: Toggle the 'premium' status of the current user account
+  // Toggle the 'premium' status of the current user account
   try {
-    await Account.findOneAndUpdate({_id: req.session.account._id}, {premium: activate});
+    await Account.findOneAndUpdate({ _id: req.session.account._id }, { premium: activate });
     return res.status(201).json({ message: 'Premium status toggled' });
   } catch (err) {
     console.log(err);
@@ -131,17 +133,17 @@ const premium = async (req, res) => {
   }
 };
 
-const getUsers = async(req, res) => {
-  try{
+const getUsers = async (req, res) => {
+  try {
     const users = await Account.find({}).select('_id username').lean().exec();
-    return res.json({ users: users });
-  } catch(err){
+    return res.json({ users });
+  } catch (err) {
     console.log(err);
-    return res.status(500).json({error:'Error changing visibility'});
+    return res.status(500).json({ error: 'Error changing visibility' });
   }
-}
+};
 
-const deleteAccount = async(req, res) => {
+const deleteAccount = async (req, res) => {
   console.log('deleteAccount');
   try {
     const deleted = await Account.findByIdAndDelete({ _id: req.session.account._id });
@@ -150,7 +152,42 @@ const deleteAccount = async(req, res) => {
     console.log(err);
     return res.status(500).json({ error: 'Error deleting account!' });
   }
-}
+};
+
+const getStorage = async (req, res) => {
+  try {
+    const docs = await Account.findById({ _id: req.session.account._id }).select('premium storage').lean().exec();
+
+    return res.json({ user: docs });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: 'Error updating uploaded media total' });
+  }
+};
+
+const updateStorage = async (req, res) => {
+  const size = req.files.uploadFile.size;
+
+  try {
+    const docs = await Account.findById({ _id: req.session.account._id }).select('premium storage').lean().exec();
+
+    if (docs.premium && docs.storage + size >= MAX_PREMIUM_STORAGE) {
+      return res.status(400).json({ error: 'Out of storage!' });
+    } if (docs.storage + size >= MAX_STANDARD_STORAGE) {
+      return res.status(400).json({ error: 'Out of storage! Consider upgrading to premium!' });
+    }
+
+    await Account.findByIdAndUpdate(
+      { _id: req.session.account._id },
+      { storage: docs.storage + size },
+    );
+
+    return res.status(201).json({ message: 'Storage updated' });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: 'Error updating uploaded media total' });
+  }
+};
 
 module.exports = {
   loginPage,
@@ -162,4 +199,6 @@ module.exports = {
   accountPage,
   getUsers,
   deleteAccount,
+  getStorage,
+  updateStorage,
 };

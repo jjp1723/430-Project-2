@@ -2,11 +2,12 @@ const controllers = require('./controllers');
 const mid = require('./middleware');
 
 const router = (app) => {
+  app.get('/getStorage', mid.requiresLogin, controllers.Account.getStorage);
+  app.post('/updateStorage', mid.requiresLogin, controllers.Account.updateStorage);
   app.get('/getMedia', mid.requiresLogin, controllers.Media.getMedia);
   app.get('/getPublic', mid.requiresLogin, controllers.Media.getPublicMedia);
   app.delete('/deleteMedia', mid.requiresLogin, controllers.Media.deleteMedia);
   app.post('/toggleMedia', mid.requiresLogin, controllers.Media.toggleVisibility);
-  app.delete('/nuke', mid.requiresLogin, controllers.Media.nuke)
 
   app.get('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
   app.post('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.login);
@@ -24,6 +25,7 @@ const router = (app) => {
   app.post('/change', mid.requiresSecure, mid.requiresLogin, controllers.Account.change);
   app.post('/premium', mid.requiresSecure, mid.requiresLogin, controllers.Account.premium);
   app.get('/getUsers', mid.requiresSecure, mid.requiresLogin, controllers.Account.getUsers);
+  app.delete('/nuke', mid.requiresSecure, mid.requiresLogin, controllers.Media.nuke);
   app.delete('/deleteAccount', mid.requiresSecure, mid.requiresLogin, controllers.Account.deleteAccount);
 
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);

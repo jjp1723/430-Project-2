@@ -40,10 +40,10 @@ const MediaSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  public:{
-    type:Boolean,
-    required:true,
-  }
+  public: {
+    type: Boolean,
+    required: true,
+  },
 });
 
 MediaSchema.statics.toAPI = (doc) => ({

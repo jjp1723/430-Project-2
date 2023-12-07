@@ -6,23 +6,23 @@ const makerPage = async (req, res) => res.render('app');
 const explorePage = async (req, res) => res.render('explore');
 
 const makeMedia = async (req, res) => {
-  console.log(req.body.description);
   if (!req.files || !req.files.uploadFile || Object.keys(req.files).length === 0) {
     return res.status(400).json({ error: 'No file selected' });
   }
 
   let desc = req.body.description;
 
-  if(!desc){
+  if (!desc) {
     desc = 'No description provided';
   }
 
-  let mime = req.files.uploadFile.mimetype;
-
-  if(!mime.includes('image/'))
-  {
+  if (!req.files.uploadFile.mimetype.includes('image/')) {
     return res.status(400).json({ error: 'Selected file is not an image' });
   }
+
+  // if(req.files.uploadFile.size >> 128000){
+  //   return res.status(400).json({ error: 'Selected file is too large' });
+  // }
 
   const mediaData = {
     owner: req.session.account._id,
@@ -34,9 +34,6 @@ const makeMedia = async (req, res) => {
     description: desc,
     public: (req.body.visibility === 'public'),
   };
-
-  console.log(req.body.visibility);
-  console.log(mediaData);
 
   try {
     const newMedia = new Media(mediaData);
@@ -69,16 +66,16 @@ const getMedia = async (req, res) => {
 };
 
 const getPublicMedia = async (req, res) => {
-  try{
+  try {
     const query = { public: true };
     const docs = await Media.find(query).select('name description uploadedDate mimetype data owner').lean().exec();
 
-    return res.json({media:docs});
-  } catch(err) {
+    return res.json({ media: docs });
+  } catch (err) {
     console.log(err);
-    return res.status(500).json({error: 'Error retreiving public media!'});
+    return res.status(500).json({ error: 'Error retreiving public media!' });
   }
-}
+};
 
 const deleteMedia = async (req, res) => {
   try {
@@ -91,14 +88,14 @@ const deleteMedia = async (req, res) => {
 };
 
 const toggleVisibility = async (req, res) => {
-  try{
-    const media = await Media.findOneAndUpdate({_id: req.body._id}, {public: !req.body.public});
+  try {
+    const media = await Media.findOneAndUpdate({ _id: req.body._id }, { public: !req.body.public });
     return res.status(201).json({ media });
-  } catch(err){
+  } catch (err) {
     console.log(err);
-    return res.status(500).json({error:'Error changing visibility'});
+    return res.status(500).json({ error: 'Error changing visibility' });
   }
-}
+};
 
 const nuke = async (req, res) => {
   console.log('nuke');

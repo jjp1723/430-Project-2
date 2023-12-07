@@ -6,7 +6,10 @@ const handleMedia = (e) => {
     e.preventDefault();
     helper.hideError();
 
-    helper.sendFile(e.target.action, new FormData(e.target), loadMediaFromServer);
+    const formData = new FormData(e.target);
+
+    helper.sendFile('/updateStorage', formData);
+    helper.sendFile(e.target.action, formData, loadMediaFromServer);
 
     return false;
 };
@@ -35,6 +38,16 @@ const MediaForm = (props) => {
 };
 
 const MediaList = (props) => {
+    let totalStorage = 64;
+    let storageString = '';
+    if(props.user){
+        if(props.user.premium){
+            totalStorage = 256;
+        }
+        storageString = `Total storage used: ${props.user.storage / 1000000}/ ${totalStorage} Megabytes`
+    }
+
+
     if(props.media.length === 0){
         return(
             <div className='mediaList'>
@@ -72,6 +85,7 @@ const MediaList = (props) => {
 
     return(
         <div className='mediaList'>
+            <h1>{storageString}</h1>
             {mediaNodes}
         </div>
     );
@@ -79,9 +93,11 @@ const MediaList = (props) => {
 
 // loadMediaFromServer Function - Loads all of a user's uploaded media
 const loadMediaFromServer = async () => {
-    const response = await fetch('/getMedia');
-    const data = await response.json();
-    ReactDOM.render(<MediaList media={data.media}/>, document.getElementById('media'));
+    const userResponse = await fetch('/getStorage');
+    const userData = await userResponse.json();
+    const mediaResponse = await fetch('/getMedia');
+    const mediaData = await mediaResponse.json();
+    ReactDOM.render(<MediaList media={mediaData.media} user={userData.user}/>, document.getElementById('media'));
 };
 
 // deleteMediaFromServer Function - Deletes a specific media entry from the database
@@ -92,9 +108,8 @@ const deleteMediaFromServer = async (media) => {
     }
 }
 
-// To-Do: Create a function to be called from a specific entry akin to deleteMediaFromServer
-//  which allows users to toggle whether their media will be publically viewable in the explore tab
-
+// toggleMediaVisibilityFunction - Toggles whether a specific media entry is visible
+//  on the Explore page
 const toggleMediaVisibility = async (media) => {
     const response = await fetch('/toggleMedia', {method: 'POST', headers:{'Content-Type': 'application/json'}, body: JSON.stringify(media)});
     if(response.status === 201){

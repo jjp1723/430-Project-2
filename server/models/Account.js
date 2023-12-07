@@ -25,10 +25,10 @@ const AccountSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  totalData: {
-    type:Number,
-    default:0,
-  }
+  storage: {
+    type: Number,
+    default: 0,
+  },
 });
 
 // toAPI function - Converts a doc to something that can be stored in Redis
