@@ -55,12 +55,24 @@ const handleNuke = async (e) => {
     // Getting the current 'checked' status of the checkbox
     if(!e.target.querySelector('#confirmBox').checked){
         helper.handleError('You must confirm your choice to delete your account!');
+        return false;
     }
+    
+    document.getElementById('mediaMessage').classList.add('hidden');
 
     // Sends the status of the checkbox in a post request through helper
-    await fetch(e.target.action, {method: 'DELETE', headers: {'Content-Type': 'application/json'}});
-    await fetch('/deleteAccount', {method: 'DELETE', headers: {'Content-Type': 'application/json'}});
-    // await fetch('/login', {method: 'GET', headers: {'Content-Type': 'application/json'}});
+    await fetch(e.target.action, { method: 'DELETE'});
+    const deleteResponse = await fetch('/deleteAccount', { method: 'DELETE'});
+    
+    const result = await deleteResponse.json();
+
+    if(result.redirect) {
+        window.location = result.redirect;
+    }
+
+    if(result.error) {
+        helper.handleError(result.error);
+    }
 
     return false;
 }

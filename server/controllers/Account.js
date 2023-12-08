@@ -146,8 +146,9 @@ const getUsers = async (req, res) => {
 const deleteAccount = async (req, res) => {
   console.log('deleteAccount');
   try {
-    const deleted = await Account.findByIdAndDelete({ _id: req.session.account._id });
-    return res.status(201).json({ redirect: '/logout', deleted });
+    await Account.findByIdAndDelete({ _id: req.session.account._id });
+    req.session.destroy();
+    return res.json({redirect: '/'});
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: 'Error deleting account!' });
@@ -159,6 +160,54 @@ const getStorage = async (req, res) => {
     const docs = await Account.findById({ _id: req.session.account._id }).select('premium storage').lean().exec();
 
     return res.json({ user: docs });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: 'Error updating uploaded media total' });
+  }
+};
+
+const increaseStorage = async (req, res) => {
+  const size = req.files.uploadFile.size;
+
+  try {
+    const docs = await Account.findById({ _id: req.session.account._id }).select('premium storage').lean().exec();
+
+    if (docs.premium && docs.storage + size >= MAX_PREMIUM_STORAGE) {
+      return res.status(400).json({ error: 'Out of storage!' });
+    } if (docs.storage + size >= MAX_STANDARD_STORAGE) {
+      return res.status(400).json({ error: 'Out of storage! Consider upgrading to premium!' });
+    }
+
+    await Account.findByIdAndUpdate(
+      { _id: req.session.account._id },
+      { storage: docs.storage + size },
+    );
+
+    return res.status(201).json({ message: 'Storage updated' });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: 'Error updating uploaded media total' });
+  }
+};
+
+const decreaseStorage = async (req, res) => {
+  const size = req.files.uploadFile.size * -1;
+
+  try {
+    const docs = await Account.findById({ _id: req.session.account._id }).select('premium storage').lean().exec();
+
+    if (docs.premium && docs.storage + size >= MAX_PREMIUM_STORAGE) {
+      return res.status(400).json({ error: 'Out of storage!' });
+    } if (docs.storage + size >= MAX_STANDARD_STORAGE) {
+      return res.status(400).json({ error: 'Out of storage! Consider upgrading to premium!' });
+    }
+
+    await Account.findByIdAndUpdate(
+      { _id: req.session.account._id },
+      { storage: docs.storage + size },
+    );
+
+    return res.status(201).json({ message: 'Storage updated' });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: 'Error updating uploaded media total' });

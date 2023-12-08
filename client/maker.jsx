@@ -102,7 +102,8 @@ const loadMediaFromServer = async () => {
 
 // deleteMediaFromServer Function - Deletes a specific media entry from the database
 const deleteMediaFromServer = async (media) => {
-    const response = await fetch('/deleteMedia', {method: 'DELETE', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(media)});
+    console.log(JSON.stringify(media._id));
+    const response = await fetch('/deleteMedia', {method: 'DELETE', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({_id: media._id})});
     if(response.status === 201){
         loadMediaFromServer();
     }
@@ -111,7 +112,7 @@ const deleteMediaFromServer = async (media) => {
 // toggleMediaVisibilityFunction - Toggles whether a specific media entry is visible
 //  on the Explore page
 const toggleMediaVisibility = async (media) => {
-    const response = await fetch('/toggleMedia', {method: 'POST', headers:{'Content-Type': 'application/json'}, body: JSON.stringify(media)});
+    const response = await fetch('/toggleMedia', {method: 'POST', headers:{'Content-Type': 'application/json'}, body: JSON.stringify({_id: media._id})});
     if(response.status === 201){
         loadMediaFromServer();
     }

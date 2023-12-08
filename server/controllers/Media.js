@@ -78,9 +78,11 @@ const getPublicMedia = async (req, res) => {
 };
 
 const deleteMedia = async (req, res) => {
+  console.log(req.body);
   try {
-    const deleted = await Media.findByIdAndDelete({ _id: req.body._id });
-    return res.status(201).json({ deleted });
+    console.log(req.body._id);
+    await Media.findByIdAndDelete(req.body._id );
+    return res.status(201).json({ message: 'Media deleted' });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: 'Error deleting media!' });
@@ -89,7 +91,7 @@ const deleteMedia = async (req, res) => {
 
 const toggleVisibility = async (req, res) => {
   try {
-    const media = await Media.findOneAndUpdate({ _id: req.body._id }, { public: !req.body.public });
+    const media = await Media.findOneAndUpdate({ _id: req.body }, { public: !req.body.public });
     return res.status(201).json({ media });
   } catch (err) {
     console.log(err);
@@ -100,8 +102,8 @@ const toggleVisibility = async (req, res) => {
 const nuke = async (req, res) => {
   console.log('nuke');
   try {
-    const deleted = await Media.deleteMany({ owner: req.session.account._id });
-    return res.status(201).json({ deleted });
+    await Media.deleteMany({ owner: req.session.account._id });
+    return res.status(201).send();
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: 'Error deleting media!' });
