@@ -3,6 +3,7 @@ const _ = require('underscore');
 
 const setname = (name) => _.escape(name).trim();
 
+// Media Schema
 const MediaSchema = new mongoose.Schema({
   name: {
     type: String,

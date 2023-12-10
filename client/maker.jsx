@@ -2,18 +2,31 @@ const helper = require('./helper.js');
 const React = require('react');
 const ReactDOM = require('react-dom');
 
-const handleMedia = (e) => {
+// handleMedia Function - Handles submissions from the MediaForm form
+const handleMedia = async (e) => {
     e.preventDefault();
     helper.hideError();
 
-    const formData = new FormData(e.target);
+    // Getting a reference to the uploaded file, which is required in order to submit the form
+    const file = e.target.querySelector('#file');
 
-    helper.sendFile('/updateStorage', formData);
-    helper.sendFile(e.target.action, formData, loadMediaFromServer);
+    // Making a request to the /incStorage url which tests if the uploaded file is small enough to
+    //  be stored on the database and adjusts the user's total storage used accordingly
+    const response = await fetch('/incStorage', {method: 'POST', headers:{'Content-Type': 'application/json'}, body: JSON.stringify({size: file.files[0].size})});
+
+    // If the uploaded file can be stored, a call is made to the form's action (/maker), which
+    //  creates a new media object in the database
+    if(response.status === 201)
+    {
+        const formData = new FormData(e.target);
+        helper.sendFile(e.target.action, formData, loadMediaFromServer);
+    }
 
     return false;
 };
 
+// MediaForm - Renders a form the user can use to upload image files, with optional descriptions,
+//  to the database
 const MediaForm = (props) => {
     return(
         <form id='mediaForm'
@@ -24,7 +37,7 @@ const MediaForm = (props) => {
             encType="multipart/form-data"
             className='mediaForm'>
                 
-            <input type='file' name='uploadFile'/>
+            <input id='file' type='file' name='uploadFile' required/>
             <label htmlFor='description'>Description (Optional): </label>
             <input id='mediaDescription' type='text' name='description' placeholder='Media Description'/>
             <label htmlFor='visibility'>Visibility: </label>
@@ -37,8 +50,10 @@ const MediaForm = (props) => {
     );
 };
 
+// MediaList - Renders a form which displays all images the user has uploaded with relevent data
 const MediaList = (props) => {
-    let totalStorage = 64;
+    // Creating a string that displays how much storage the user has used our of what is available
+    let totalStorage = 16;
     let storageString = '';
     if(props.user){
         if(props.user.premium){
@@ -47,7 +62,7 @@ const MediaList = (props) => {
         storageString = `Total storage used: ${props.user.storage / 1000000}/ ${totalStorage} Megabytes`
     }
 
-
+    // If the user hasn't uploaded any files yet, a relevent message is displayed
     if(props.media.length === 0){
         return(
             <div className='mediaList'>
@@ -56,8 +71,9 @@ const MediaList = (props) => {
         );
     }
 
+    // Each file has a visibility field that is assigned to them that the user can toggle between
+    //  Public and Private (all are Private by default)
     let visibility;
-
     const mediaNodes = props.media.map(media => {
         if(media.public){
             visibility = 'Public';
@@ -65,6 +81,7 @@ const MediaList = (props) => {
             visibility = 'Private';
         }
 
+        // Creating the datastring used to display each image on the form based on each file's data
         let datastring = `data:${media.mimetype};base64,` + media.data.toString('base64');
 
         return(
@@ -91,7 +108,7 @@ const MediaList = (props) => {
     );
 };
 
-// loadMediaFromServer Function - Loads all of a user's uploaded media
+// loadMediaFromServer Function - Loads all of a user's uploaded media and their storage use status
 const loadMediaFromServer = async () => {
     const userResponse = await fetch('/getStorage');
     const userData = await userResponse.json();
@@ -100,12 +117,15 @@ const loadMediaFromServer = async () => {
     ReactDOM.render(<MediaList media={mediaData.media} user={userData.user}/>, document.getElementById('media'));
 };
 
-// deleteMediaFromServer Function - Deletes a specific media entry from the database
+// deleteMediaFromServer Function - Deletes a specific media entry from the database and updates
+//  the user's storage use status
 const deleteMediaFromServer = async (media) => {
-    console.log(JSON.stringify(media._id));
-    const response = await fetch('/deleteMedia', {method: 'DELETE', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({_id: media._id})});
-    if(response.status === 201){
-        loadMediaFromServer();
+    const deleteResponse = await fetch('/deleteMedia', {method: 'DELETE', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({_id: media._id})});
+    if(deleteResponse.status === 201){
+        const decResponse = await fetch('/decStorage', {method: 'POST', headers:{'Content-Type': 'application/json'}, body: JSON.stringify({size: media.size})});
+        if(decResponse.status === 201) {
+            loadMediaFromServer();
+        }
     }
 }
 
@@ -118,9 +138,10 @@ const toggleMediaVisibility = async (media) => {
     }
 };
 
+// init Function - Renders the MediaForm and MediaList forms automatically, then calls the
+//  loadMediaFromServer function to populate the MediaList form
 const init = () => {
     ReactDOM.render(<MediaForm/>, document.getElementById('makeMedia'));
-
     ReactDOM.render(<MediaList media={[]}/>, document.getElementById('media'));
 
     loadMediaFromServer();

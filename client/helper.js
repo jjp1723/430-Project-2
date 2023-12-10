@@ -31,6 +31,7 @@ const sendPost = async (url, data, handler) => {
     }
 };
 
+// sendfile Function - Handles sending files to the server in POST requests
 const sendFile = async (url, data, handler) => {
     const response = await fetch(url, {
         method: 'POST',

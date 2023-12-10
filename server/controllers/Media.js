@@ -2,28 +2,29 @@ const models = require('../models');
 
 const { Media } = models;
 
+// makerPage & explorePage Functions - Render the app and explore pages
 const makerPage = async (req, res) => res.render('app');
 const explorePage = async (req, res) => res.render('explore');
 
+// makeMedia Function - Creates a new Media object in the database using provided data
 const makeMedia = async (req, res) => {
+  // Checking if there is a file uploaded than can have its data processed
   if (!req.files || !req.files.uploadFile || Object.keys(req.files).length === 0) {
     return res.status(400).json({ error: 'No file selected' });
   }
 
-  let desc = req.body.description;
-
-  if (!desc) {
-    desc = 'No description provided';
-  }
-
+  // Checking if the uploaded file is an image
   if (!req.files.uploadFile.mimetype.includes('image/')) {
     return res.status(400).json({ error: 'Selected file is not an image' });
   }
 
-  // if(req.files.uploadFile.size >> 128000){
-  //   return res.status(400).json({ error: 'Selected file is too large' });
-  // }
+  // Getting the provided description for the file; if it wasn't provided a default one is assigned
+  let desc = req.body.description;
+  if (!desc) {
+    desc = 'No description provided';
+  }
 
+  // Storing all provided data needed to create a Media object
   const mediaData = {
     owner: req.session.account._id,
     name: req.files.uploadFile.name,
@@ -36,6 +37,7 @@ const makeMedia = async (req, res) => {
   };
 
   try {
+    // Creating a new Media object with the provided data and saving it to the database
     const newMedia = new Media(mediaData);
     const doc = await newMedia.save();
     return res.status(201).json({
@@ -53,6 +55,7 @@ const makeMedia = async (req, res) => {
   }
 };
 
+// getMedia Function - Gets relevent data of all Media objects the user has created
 const getMedia = async (req, res) => {
   try {
     const query = { owner: req.session.account._id };
@@ -65,6 +68,8 @@ const getMedia = async (req, res) => {
   }
 };
 
+// getPublicMedia Function - Gets relevent data of all uploaded Media objects from the database
+//  whose visibility is set to Public
 const getPublicMedia = async (req, res) => {
   try {
     const query = { public: true };
@@ -77,11 +82,10 @@ const getPublicMedia = async (req, res) => {
   }
 };
 
+// deleteMedia Function - Deletes a specified Media object from the database
 const deleteMedia = async (req, res) => {
-  console.log(req.body);
   try {
-    console.log(req.body._id);
-    await Media.findByIdAndDelete(req.body._id );
+    await Media.findByIdAndDelete(req.body._id);
     return res.status(201).json({ message: 'Media deleted' });
   } catch (err) {
     console.log(err);
@@ -89,6 +93,7 @@ const deleteMedia = async (req, res) => {
   }
 };
 
+// toggleVisibility Function - Toggles whether a specified Media object can be seen publicly
 const toggleVisibility = async (req, res) => {
   try {
     const media = await Media.findOneAndUpdate({ _id: req.body }, { public: !req.body.public });
@@ -99,8 +104,8 @@ const toggleVisibility = async (req, res) => {
   }
 };
 
+// nuke Function - Deletes all Media object owned by the current user
 const nuke = async (req, res) => {
-  console.log('nuke');
   try {
     await Media.deleteMany({ owner: req.session.account._id });
     return res.status(201).send();

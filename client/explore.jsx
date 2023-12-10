@@ -15,13 +15,16 @@ const ExploreList = (props) => {
         );
     }
 
+    // dataString will be used to store the data property of the media to be displayed
     let datastring;
 
+    // Creating a list of all users registered with the site
     let owners = [];
     props.users.map(user => {
         owners[user._id] = user.username;
     });
 
+    // Generating each 'media' node to be displayed in the form
     const mediaNodes = props.media.map(media => {
         datastring = `data:${media.mimetype};base64,` + media.data.toString('base64');
 

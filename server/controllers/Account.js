@@ -2,8 +2,9 @@ const models = require('../models');
 
 const { Account } = models;
 
-const MAX_STANDARD_STORAGE = 64000000;
-const MAX_PREMIUM_STORAGE = 256000000;
+// The maximum storage available to standard and premium accounts (16MB and 128MB)
+const MAX_STANDARD_STORAGE = 16000000;
+const MAX_PREMIUM_STORAGE = 128000000;
 
 // Render functions for the login and account pages
 const loginPage = (req, res) => res.render('login');
@@ -31,9 +32,7 @@ const login = (req, res) => {
     if (err || !account) {
       return res.status(401).json({ error: 'Wrong username or password!' });
     }
-
     req.session.account = Account.toAPI(account);
-
     return res.json({ redirect: '/maker' });
   });
 };
@@ -133,6 +132,7 @@ const premium = async (req, res) => {
   }
 };
 
+// getUsers Function - Returns a list of all users currently registered with the site
 const getUsers = async (req, res) => {
   try {
     const users = await Account.find({}).select('_id username').lean().exec();
@@ -143,18 +143,19 @@ const getUsers = async (req, res) => {
   }
 };
 
+// deleteAccount Function - Deletes the current user's account
 const deleteAccount = async (req, res) => {
-  console.log('deleteAccount');
   try {
     await Account.findByIdAndDelete({ _id: req.session.account._id });
     req.session.destroy();
-    return res.json({redirect: '/'});
+    return res.json({ redirect: '/' });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: 'Error deleting account!' });
   }
 };
 
+// getStorage Function - Returns the total storage used by the current user
 const getStorage = async (req, res) => {
   try {
     const docs = await Account.findById({ _id: req.session.account._id }).select('premium storage').lean().exec();
@@ -166,18 +167,26 @@ const getStorage = async (req, res) => {
   }
 };
 
+// increaseStorage Function - Increases the total storage used by the current user
+//  when a new file is uploaded
 const increaseStorage = async (req, res) => {
-  const size = req.files.uploadFile.size;
+  // Getting the provided size of the new file to be uploaded
+  const { size } = req.body;
 
   try {
+    // Getting the current amount of storage the user has used
     const docs = await Account.findById({ _id: req.session.account._id }).select('premium storage').lean().exec();
 
+    // Checking if the user has a premium account, and if so, if they will surpassed the limit
     if (docs.premium && docs.storage + size >= MAX_PREMIUM_STORAGE) {
       return res.status(400).json({ error: 'Out of storage!' });
-    } if (docs.storage + size >= MAX_STANDARD_STORAGE) {
+    }
+    // If the user has a standard account, checks if they will surpassed the limit
+    if (docs.storage + size >= MAX_STANDARD_STORAGE) {
       return res.status(400).json({ error: 'Out of storage! Consider upgrading to premium!' });
     }
 
+    // Updating the storage used by the user if uploading the new file will not surpass the limit
     await Account.findByIdAndUpdate(
       { _id: req.session.account._id },
       { storage: docs.storage + size },
@@ -186,49 +195,24 @@ const increaseStorage = async (req, res) => {
     return res.status(201).json({ message: 'Storage updated' });
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ error: 'Error updating uploaded media total' });
+    return res.status(500).json({ error: 'Error updating used storage total' });
   }
 };
 
+// decreaseStorage Function - Decreases the total storage used by the current user
+//  when an uploaded file is deleted
 const decreaseStorage = async (req, res) => {
-  const size = req.files.uploadFile.size * -1;
+  // Getting the provided size of the existing file to be deleted
+  const { size } = req.body;
 
   try {
+    // Getting the current amount of storage the user has used
     const docs = await Account.findById({ _id: req.session.account._id }).select('premium storage').lean().exec();
 
-    if (docs.premium && docs.storage + size >= MAX_PREMIUM_STORAGE) {
-      return res.status(400).json({ error: 'Out of storage!' });
-    } if (docs.storage + size >= MAX_STANDARD_STORAGE) {
-      return res.status(400).json({ error: 'Out of storage! Consider upgrading to premium!' });
-    }
-
+    // Updating the storage used by the user
     await Account.findByIdAndUpdate(
       { _id: req.session.account._id },
-      { storage: docs.storage + size },
-    );
-
-    return res.status(201).json({ message: 'Storage updated' });
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({ error: 'Error updating uploaded media total' });
-  }
-};
-
-const updateStorage = async (req, res) => {
-  const size = req.files.uploadFile.size;
-
-  try {
-    const docs = await Account.findById({ _id: req.session.account._id }).select('premium storage').lean().exec();
-
-    if (docs.premium && docs.storage + size >= MAX_PREMIUM_STORAGE) {
-      return res.status(400).json({ error: 'Out of storage!' });
-    } if (docs.storage + size >= MAX_STANDARD_STORAGE) {
-      return res.status(400).json({ error: 'Out of storage! Consider upgrading to premium!' });
-    }
-
-    await Account.findByIdAndUpdate(
-      { _id: req.session.account._id },
-      { storage: docs.storage + size },
+      { storage: docs.storage - size },
     );
 
     return res.status(201).json({ message: 'Storage updated' });
@@ -249,5 +233,6 @@ module.exports = {
   getUsers,
   deleteAccount,
   getStorage,
-  updateStorage,
+  increaseStorage,
+  decreaseStorage,
 };

@@ -60,16 +60,19 @@ const handleNuke = async (e) => {
     
     document.getElementById('mediaMessage').classList.add('hidden');
 
-    // Sends the status of the checkbox in a post request through helper
+    // Sends a DELETE request through the form action (/nuke), which removes all media entries
+    //  owned by the user from the database
     await fetch(e.target.action, { method: 'DELETE'});
+
+    // Sending a DELETE request to the /deleteAccount url, which deletes the user's account
     const deleteResponse = await fetch('/deleteAccount', { method: 'DELETE'});
     
+    // Getting the resuld of the account deletion request and either rerouting to the login page or
+    //  displaying any relevent errors
     const result = await deleteResponse.json();
-
     if(result.redirect) {
         window.location = result.redirect;
     }
-
     if(result.error) {
         helper.handleError(result.error);
     }
