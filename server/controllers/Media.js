@@ -97,7 +97,7 @@ const deleteMedia = async (req, res) => {
 const toggleVisibility = async (req, res) => {
   try {
     const media = await Media.findOneAndUpdate({ _id: req.body }, { public: !req.body.public });
-    return res.status(201).json({ media });
+    return res.status(201).json({ message: 'Status Toggled' });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: 'Error changing visibility' });

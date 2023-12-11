@@ -132,7 +132,7 @@ const deleteMediaFromServer = async (media) => {
 // toggleMediaVisibilityFunction - Toggles whether a specific media entry is visible
 //  on the Explore page
 const toggleMediaVisibility = async (media) => {
-    const response = await fetch('/toggleMedia', {method: 'POST', headers:{'Content-Type': 'application/json'}, body: JSON.stringify({_id: media._id})});
+    const response = await fetch('/toggleMedia', {method: 'POST', headers:{'Content-Type': 'application/json'}, body: JSON.stringify({_id: media._id, public: media.public})});
     if(response.status === 201){
         loadMediaFromServer();
     }
