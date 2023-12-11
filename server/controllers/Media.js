@@ -96,7 +96,7 @@ const deleteMedia = async (req, res) => {
 // toggleVisibility Function - Toggles whether a specified Media object can be seen publicly
 const toggleVisibility = async (req, res) => {
   try {
-    const media = await Media.findOneAndUpdate({ _id: req.body }, { public: !req.body.public });
+    await Media.findOneAndUpdate({ _id: req.body }, { public: !req.body.public });
     return res.status(201).json({ message: 'Status Toggled' });
   } catch (err) {
     console.log(err);
