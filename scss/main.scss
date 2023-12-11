@@ -60,6 +60,7 @@ nav:nth-child(1) {
     padding: 30px;
     font-size: 1.2em;
     background-color: slategray;
+    border-radius: 10px;
 
     h3 {
         text-align: center;
@@ -67,25 +68,37 @@ nav:nth-child(1) {
 
     label {
         display: inline-block;
-        width: 200px;
+        width: auto;
         margin-right: 10px;
         text-align: right;
         font-size: 1.2em;
     }
+    
+    #user, #pass, #pass2, #passOld, #passNew1, #passNew2 {
+        text-align: center;
+        font-size: 1.1em;
+        border-radius: 6px;
+        margin:4px;
+
+        :focus{
+            outline: none;
+            box-shadow: 0px 0px 1px 1px #55acee;
+        }
+    }
 }
 
 .formSubmit {
-    transition: 0.4s ease;
     display: block;
     text-align: center;
     margin: 0 auto;
     margin-top: 14px;
     font-size: 1.2em;
-    width: 100px;
+    width: auto;
     background-color: $mainColor;
-    border-radius: 2px;
+    transition: background-color 0.4s ease;
+    border-radius: 10px;
     border-color: $mainColor;
-    padding: 3px 0px;
+    padding: 10px;
     color: white;
     text-decoration: none;
 
@@ -94,20 +107,8 @@ nav:nth-child(1) {
     }
 
     :hover {
-        transition: background-color 0.4s ease;
+        transition: background-color 0.8s ease;
         background-color: $mainColorLight;
-    }
-}
-
-#user, #pass, #pass2 {
-    text-align: center;
-    font-size: 1.1em;
-    width: 180px;
-    border-radius: 6px;
-
-    :focus{
-        outline: none;
-        box-shadow: 0px 0px 1px 1px #55acee;
     }
 }
 
@@ -150,56 +151,51 @@ nav:nth-child(1) {
     min-width: 600px;
     margin: 0 auto;
     border: 2px solid $mainColor;
-    height: 80px;
     width: 800px;
     margin-top:20px;
-    padding-top:10px;
+    padding:20px;
     background-color: $mainColorDark;
-    border-bottom-right-radius: 4px;
-    border-top-right-radius: 4px;
+    border-radius: 10px;
     color: white;
 
-    #imageParams{
-        margin: 20px;
-    }
-
-    #imageUpload{
-        margin: 20px;
-    }
-
-    input[type=file] {
-        float: left;
-    }
-
-    input[type=text] {
-        float: left;
+    .grid-container{
+        display:grid;
+        gap: 30px 40px;
+        grid-template-columns: auto auto;
+        grid-template-rows: auto auto;
+        justify-content: space-evenly;
     }
 
     label {
-        width: 200px;
+        width: auto;
         margin-left: 20px;
         font-size: 1.2em;
         float: left;
         color: white;
     }
-}
 
-.makeMediaSubmit {
-    transition: 0.4s ease;
-    display: inline;
-    width: 90px;
-    background-color: $mainColor;
-    border-radius: 2px;
-    color: white;
-    text-decoration: none;
-
-    :link, :visited, :hover, :active{
+    .makeMediaSubmit {
+        transition: 0.4s ease;
+        display: inline;
+        width: 180px;
+        background-color: $mainColor;
+        border-radius: 2px;
         color: white;
+        text-decoration: none;
+        font-size: 1.2em;
+    
+        :link, :visited, :hover, :active{
+            color: white;
+        }
+    
+        :hover {
+            transition: 0.4s ease;
+            background-color: $mainColorLight;
+        }
     }
 
-    :hover {
-        transition: 0.4s ease;
-        background-color: $mainColorLight;
+    .grid-item{
+        justify-content: center;
     }
 }
 
@@ -208,7 +204,7 @@ nav:nth-child(1) {
     min-width: 400px;
     text-align: center;
     border: 2px solid $mainColor;
-    border-radius: 4px;
+    border-radius: 10px;
     background-color: darkslategray;
     margin: 0 auto;
     margin-top: 40px;
@@ -218,13 +214,21 @@ nav:nth-child(1) {
         max-width: 100%;
         max-height: 100%;
     }
+
+    #mediaItem{
+        margin-top: 20px;
+        padding-bottom: 20px;
+        border: 2px solid $mainColor;
+        border-radius: 4px;
+        background-color: gray;
+    }
 }
 
 .media {
     width: 95%;
     margin: 20px auto;
     border: 2px solid $mainColorDark;
-    border-radius: 4px;
+    border-radius: 10px;
     background-color: gray;
     padding: 10px;
     min-height:60px;

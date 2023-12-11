@@ -10,7 +10,7 @@ const ExploreList = (props) => {
     if(props.media.length === 0){
         return(
             <div className='mediaList'>
-                <h3 className='emptyMedia'>No Media Yet!</h3>
+                <h3 className='emptyMedia'>No Images Uploaded Yet!</h3>
             </div>
         );
     }
@@ -29,12 +29,12 @@ const ExploreList = (props) => {
         datastring = `data:${media.mimetype};base64,` + media.data.toString('base64');
 
         return(
-            <div key={media._id} className='media'>
-                <img src={datastring} />
-                <h3 className='mediaOwner' id='mediaOwner'> Uploader: {owners[media.owner]} </h3>
-                <h3 className='mediaName' id='mediaName'> Name: {media.name} </h3>
-                <h3 className='mediaUploaded' id='mediaUploaded'> Date Uploaded: {media.uploadedDate} </h3>
-                <h3 className='mediaDescription' id='mediaDescription'> Description: {media.description} </h3>
+            <div key={media._id} className='media' class='grid-container' id='mediaItem'>
+                <h1 className='mediaName' id='mediaName' class='grid-item'> Name: {media.name} </h1>
+                <img src={datastring}  class='grid-item'/>
+                <h3 className='mediaOwner' id='mediaOwner' class='grid-item'> Uploader: {owners[media.owner]} </h3>
+                <h3 className='mediaUploaded' id='mediaUploaded' class='grid-item'> Date Uploaded: {media.uploadedDate} </h3>
+                <h3 className='mediaDescription' id='mediaDescription' class='grid-item'> Description: {media.description} </h3>
             </div>
         );
     });

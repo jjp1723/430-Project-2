@@ -35,19 +35,25 @@ const MediaForm = (props) => {
             action='/maker'
             method='POST'
             encType="multipart/form-data"
-            className='mediaForm'>
+            className='mediaForm'
+            class='grid-container'>
 
-            <div id='imageParams'>
+            <div id='desc'  class='grid-item'>
                 <label htmlFor='description'>Description (Optional): </label>
                 <input id='mediaDescription' type='text' name='description' placeholder='Media Description'/>
+            </div>
+
+            <div id='vis'  class='grid-item'>
                 <label htmlFor='visibility'>Visibility: </label>
                 <select id='mediaVisibility' type='select' name='visibility'>
                     <option value='private' selected>Private</option>
                     <option value='public'>Public</option>
                 </select>
             </div>
-            <div id='imageUpload'>
+            <div id='upFile' class='grid-item'>
                 <input id='file' type='file' name='uploadFile' required/>
+            </div>
+            <div id='upSubmit' class='grid-item'>
                 <input className='makeMediaSubmit' type='submit' value='Upload Image'/>
             </div>
         </form>
@@ -70,7 +76,7 @@ const MediaList = (props) => {
     if(props.media.length === 0){
         return(
             <div className='mediaList'>
-                <h3 className='emptyMedia'>No Media Yet!</h3>
+                <h3 className='emptyMedia'>No Images Uploaded Yet!</h3>
             </div>
         );
     }
@@ -89,17 +95,17 @@ const MediaList = (props) => {
         let datastring = `data:${media.mimetype};base64,` + media.data.toString('base64');
 
         return(
-            <div key={media._id} className='media'>
+            <div key={media._id} className='media' class='grid-container' id='mediaItem'>
+                <h1 className='mediaName' id='mediaName' class='grid-item'> Name: {media.name} </h1>
                 <img src={datastring} />
-                <h3 className='mediaName' id='mediaName'> Name: {media.name} </h3>
-                <h3 className='mediaSize' id='mediaSize'> Size: {media.size} Bytes</h3>
-                <h3 className='mediaUploaded' id='mediaUploaded'> Date Uploaded: {media.uploadedDate} </h3>
-                <h3 className='mediaDescription' id='mediaDescription'> Description: {media.description} </h3>
-                <h3 className='mediaVisibility' id='mediaVisibility'> 
-                    Visibility: {visibility}
+                <h3 className='mediaSize' id='mediaSize' class='grid-item'> Size: {media.size} Bytes</h3>
+                <h3 className='mediaUploaded' id='mediaUploaded' class='grid-item'> Date Uploaded: {media.uploadedDate} </h3>
+                <h3 className='mediaDescription' id='mediaDescription' class='grid-item'> Description: {media.description} </h3>
+                <h3 className='mediaVisibility' id='mediaVisibility' class='grid-item'> 
+                    Visibility: {visibility} 
                     <button className='toggleVisibility' type='button' value='Toggle Visibility' onClick={() => toggleMediaVisibility(media)}>Toggle Visibility</button>
                 </h3>
-                <button className='deleteMediaSubmit' type='button' value='Delete Media' onClick={() => deleteMediaFromServer(media)}>X</button>
+                <button className='deleteMediaSubmit' type='button' value='Delete Media' onClick={() => deleteMediaFromServer(media)}>DELETE</button>
             </div>
         );
     });

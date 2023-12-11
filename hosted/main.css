@@ -55,30 +55,41 @@ nav:nth-child(1) {
   padding: 30px;
   font-size: 1.2em;
   background-color: slategray;
+  border-radius: 10px;
 }
 .mainForm h3 {
   text-align: center;
 }
 .mainForm label {
   display: inline-block;
-  width: 200px;
+  width: auto;
   margin-right: 10px;
   text-align: right;
   font-size: 1.2em;
 }
+.mainForm #user, .mainForm #pass, .mainForm #pass2, .mainForm #passOld, .mainForm #passNew1, .mainForm #passNew2 {
+  text-align: center;
+  font-size: 1.1em;
+  border-radius: 6px;
+  margin: 4px;
+}
+.mainForm #user :focus, .mainForm #pass :focus, .mainForm #pass2 :focus, .mainForm #passOld :focus, .mainForm #passNew1 :focus, .mainForm #passNew2 :focus {
+  outline: none;
+  box-shadow: 0px 0px 1px 1px #55acee;
+}
 
 .formSubmit {
-  transition: 0.4s ease;
   display: block;
   text-align: center;
   margin: 0 auto;
   margin-top: 14px;
   font-size: 1.2em;
-  width: 100px;
+  width: auto;
   background-color: green;
-  border-radius: 2px;
+  transition: background-color 0.4s ease;
+  border-radius: 10px;
   border-color: green;
-  padding: 3px 0px;
+  padding: 10px;
   color: white;
   text-decoration: none;
 }
@@ -86,19 +97,8 @@ nav:nth-child(1) {
   color: white;
 }
 .formSubmit :hover {
-  transition: background-color 0.4s ease;
+  transition: background-color 0.8s ease;
   background-color: lightGreen;
-}
-
-#user, #pass, #pass2 {
-  text-align: center;
-  font-size: 1.1em;
-  width: 180px;
-  border-radius: 6px;
-}
-#user :focus, #pass :focus, #pass2 :focus {
-  outline: none;
-  box-shadow: 0px 0px 1px 1px #55acee;
 }
 
 .hidden {
@@ -139,50 +139,46 @@ nav:nth-child(1) {
   min-width: 600px;
   margin: 0 auto;
   border: 2px solid green;
-  height: 80px;
   width: 800px;
   margin-top: 20px;
-  padding-top: 10px;
+  padding: 20px;
   background-color: darkgreen;
-  border-bottom-right-radius: 4px;
-  border-top-right-radius: 4px;
+  border-radius: 10px;
   color: white;
 }
-#makeMedia #imageParams {
-  margin: 20px;
-}
-#makeMedia #imageUpload {
-  margin: 20px;
-}
-#makeMedia input[type=file] {
-  float: left;
-}
-#makeMedia input[type=text] {
-  float: left;
+#makeMedia .grid-container {
+  display: grid;
+  gap: 30px 40px;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto;
+  justify-content: space-evenly;
 }
 #makeMedia label {
-  width: 200px;
+  width: auto;
   margin-left: 20px;
   font-size: 1.2em;
   float: left;
   color: white;
 }
-
-.makeMediaSubmit {
+#makeMedia .makeMediaSubmit {
   transition: 0.4s ease;
   display: inline;
-  width: 90px;
+  width: 180px;
   background-color: green;
   border-radius: 2px;
   color: white;
   text-decoration: none;
+  font-size: 1.2em;
 }
-.makeMediaSubmit :link, .makeMediaSubmit :visited, .makeMediaSubmit :hover, .makeMediaSubmit :active {
+#makeMedia .makeMediaSubmit :link, #makeMedia .makeMediaSubmit :visited, #makeMedia .makeMediaSubmit :hover, #makeMedia .makeMediaSubmit :active {
   color: white;
 }
-.makeMediaSubmit :hover {
+#makeMedia .makeMediaSubmit :hover {
   transition: 0.4s ease;
   background-color: lightGreen;
+}
+#makeMedia .grid-item {
+  justify-content: center;
 }
 
 #media, #explore {
@@ -190,7 +186,7 @@ nav:nth-child(1) {
   min-width: 400px;
   text-align: center;
   border: 2px solid green;
-  border-radius: 4px;
+  border-radius: 10px;
   background-color: darkslategray;
   margin: 0 auto;
   margin-top: 40px;
@@ -200,12 +196,19 @@ nav:nth-child(1) {
   max-width: 100%;
   max-height: 100%;
 }
+#media #mediaItem, #explore #mediaItem {
+  margin-top: 20px;
+  padding-bottom: 20px;
+  border: 2px solid green;
+  border-radius: 4px;
+  background-color: gray;
+}
 
 .media {
   width: 95%;
   margin: 20px auto;
   border: 2px solid darkgreen;
-  border-radius: 4px;
+  border-radius: 10px;
   background-color: gray;
   padding: 10px;
   min-height: 60px;
