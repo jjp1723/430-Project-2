@@ -147,11 +147,11 @@ nav:nth-child(1) {
 
 #makeMedia {
     width: 100%;
-    min-width: 400px;
+    min-width: 600px;
     margin: 0 auto;
     border: 2px solid $mainColor;
     height: 80px;
-    width: 700px;
+    width: 800px;
     margin-top:20px;
     padding-top:10px;
     background-color: $mainColorDark;
@@ -159,13 +159,25 @@ nav:nth-child(1) {
     border-top-right-radius: 4px;
     color: white;
 
+    #imageParams{
+        margin: 20px;
+    }
+
+    #imageUpload{
+        margin: 20px;
+    }
+
+    input[type=file] {
+        float: left;
+    }
+
     input[type=text] {
-        float:left;
+        float: left;
     }
 
     label {
-        width: 75px;
-        margin-left: 10px;
+        width: 200px;
+        margin-left: 20px;
         font-size: 1.2em;
         float: left;
         color: white;
@@ -186,7 +198,7 @@ nav:nth-child(1) {
     }
 
     :hover {
-        transition: background-color 0.4s ease;
+        transition: 0.4s ease;
         background-color: $mainColorLight;
     }
 }

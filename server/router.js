@@ -30,6 +30,7 @@ const router = (app) => {
   app.get('/explore', mid.requiresSecure, mid.requiresLogin, controllers.Media.explorePage);
   app.get('/account', mid.requiresSecure, mid.requiresLogin, controllers.Account.accountPage);
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
+  app.get('/*', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
 };
 
 module.exports = router;

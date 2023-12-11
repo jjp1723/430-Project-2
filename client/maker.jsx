@@ -36,16 +36,20 @@ const MediaForm = (props) => {
             method='POST'
             encType="multipart/form-data"
             className='mediaForm'>
-                
-            <input id='file' type='file' name='uploadFile' required/>
-            <label htmlFor='description'>Description (Optional): </label>
-            <input id='mediaDescription' type='text' name='description' placeholder='Media Description'/>
-            <label htmlFor='visibility'>Visibility: </label>
-            <select id='mediaVisibility' type='select' name='visibility'>
-                <option value='private' selected>Private</option>
-                <option value='public'>Public</option>
-            </select>
-            <input className='makeMediaSubmit' type='submit' value='Upload Image'/>
+
+            <div id='imageParams'>
+                <label htmlFor='description'>Description (Optional): </label>
+                <input id='mediaDescription' type='text' name='description' placeholder='Media Description'/>
+                <label htmlFor='visibility'>Visibility: </label>
+                <select id='mediaVisibility' type='select' name='visibility'>
+                    <option value='private' selected>Private</option>
+                    <option value='public'>Public</option>
+                </select>
+            </div>
+            <div id='imageUpload'>
+                <input id='file' type='file' name='uploadFile' required/>
+                <input className='makeMediaSubmit' type='submit' value='Upload Image'/>
+            </div>
         </form>
     );
 };

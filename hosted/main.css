@@ -136,11 +136,11 @@ nav:nth-child(1) {
 
 #makeMedia {
   width: 100%;
-  min-width: 400px;
+  min-width: 600px;
   margin: 0 auto;
   border: 2px solid green;
   height: 80px;
-  width: 700px;
+  width: 800px;
   margin-top: 20px;
   padding-top: 10px;
   background-color: darkgreen;
@@ -148,12 +148,21 @@ nav:nth-child(1) {
   border-top-right-radius: 4px;
   color: white;
 }
+#makeMedia #imageParams {
+  margin: 20px;
+}
+#makeMedia #imageUpload {
+  margin: 20px;
+}
+#makeMedia input[type=file] {
+  float: left;
+}
 #makeMedia input[type=text] {
   float: left;
 }
 #makeMedia label {
-  width: 75px;
-  margin-left: 10px;
+  width: 200px;
+  margin-left: 20px;
   font-size: 1.2em;
   float: left;
   color: white;
@@ -172,7 +181,7 @@ nav:nth-child(1) {
   color: white;
 }
 .makeMediaSubmit :hover {
-  transition: background-color 0.4s ease;
+  transition: 0.4s ease;
   background-color: lightGreen;
 }
 
