@@ -10,6 +10,12 @@ const handleMedia = async (e) => {
     // Getting a reference to the uploaded file, which is required in order to submit the form
     const file = e.target.querySelector('#file');
 
+    // Ensuring the file is an image
+    if(!file.files[0].type.includes('image/')){
+        helper.handleError('Selected file is not an image!');
+        return false;
+    }
+
     // Making a request to the /incStorage url which tests if the uploaded file is small enough to
     //  be stored on the database and adjusts the user's total storage used accordingly
     const response = await fetch('/incStorage', {method: 'POST', headers:{'Content-Type': 'application/json'}, body: JSON.stringify({size: file.files[0].size})});
@@ -40,7 +46,7 @@ const MediaForm = (props) => {
 
             <div id='desc'  class='grid-item'>
                 <label htmlFor='description'>Description (Optional): </label>
-                <input id='mediaDescription' type='text' name='description' placeholder='Media Description'/>
+                <input id='mediaDescription' type='text' name='description' placeholder='Image Description'/>
             </div>
 
             <div id='vis'  class='grid-item'>
@@ -84,12 +90,22 @@ const MediaList = (props) => {
     // Each file has a visibility field that is assigned to them that the user can toggle between
     //  Public and Private (all are Private by default)
     let visibility;
+
+    // Each file has an uploaded-date and size that needs to be rerendered
+    let date;
+    let size;
+    
     const mediaNodes = props.media.map(media => {
+        // Setting visibility based on the file's 'public' boolean value
         if(media.public){
             visibility = 'Public';
         } else {
             visibility = 'Private';
         }
+
+        // Parsing the file's uploaded date and size into a more legible formats
+        date = new Date(media.uploadedDate).toDateString();
+        size = media.size / 1000000;
 
         // Creating the datastring used to display each image on the form based on each file's data
         let datastring = `data:${media.mimetype};base64,` + media.data.toString('base64');
@@ -98,11 +114,11 @@ const MediaList = (props) => {
             <div key={media._id} className='media' class='grid-container' id='mediaItem'>
                 <h1 className='mediaName' id='mediaName' class='grid-item'> Name: {media.name} </h1>
                 <img src={datastring} />
-                <h3 className='mediaSize' id='mediaSize' class='grid-item'> Size: {media.size} Bytes</h3>
-                <h3 className='mediaUploaded' id='mediaUploaded' class='grid-item'> Date Uploaded: {media.uploadedDate} </h3>
+                <h3 className='mediaSize' id='mediaSize' class='grid-item'> Size: {size} Megabytes</h3>
+                <h3 className='mediaUploaded' id='mediaUploaded' class='grid-item'> Date Uploaded: {date} </h3>
                 <h3 className='mediaDescription' id='mediaDescription' class='grid-item'> Description: {media.description} </h3>
                 <h3 className='mediaVisibility' id='mediaVisibility' class='grid-item'> 
-                    Visibility: {visibility} 
+                    Visibility: {visibility}&emsp;
                     <button className='toggleVisibility' type='button' value='Toggle Visibility' onClick={() => toggleMediaVisibility(media)}>Toggle Visibility</button>
                 </h3>
                 <button className='deleteMediaSubmit' type='button' value='Delete Media' onClick={() => deleteMediaFromServer(media)}>DELETE</button>

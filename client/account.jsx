@@ -96,7 +96,7 @@ const PasswordWindow = (props) => {
             <input id='passNew1' type='password' name='passNew1' placeholder='new password'/>
             <label htmlFor='passNew2'>New Password: </label>
             <input id='passNew2' type='password' name='pass2' placeholder='retype new password'/>
-            <input className='formSubmit' type='submit' value='Password Change'/>
+            <input className='formSubmit' type='submit' value='Change Password'/>
         </form>
     );
 };
@@ -112,7 +112,7 @@ const PremiumWindow = (props) => {
             className='mainForm'>
                 
             <p>Users with a premium account get access to premium benefits, which include a further 10GB of upload storage and zero ads!</p>
-            <label htmlFor='premiumBox'>Enable Premium Benefits: </label>
+            <label htmlFor='premiumBox' id='checkLabel'>Enable Premium Benefits: </label>
             <input id='premiumBox' type='checkbox' name='premiumBox'/>
             <input className='formSubmit' type='submit' value='Update'/>
         </form>
@@ -131,7 +131,7 @@ const NukeWindow = (props) => {
                 
             <h3>Want to Delete Your Account?</h3>
             <p>Warning: Deleting your account will also delete everything you've ever uploaded. There is no going back.</p>
-            <label htmlFor='confirmBox'>I understand: </label>
+            <label htmlFor='confirmBox' id='checkLabel'>I understand: </label>
             <input id='confirmBox' type='checkbox' name='confirmBox'/>
             <input className='formSubmit' type='submit' value='Nuke'/>
         </form>

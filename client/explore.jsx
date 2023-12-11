@@ -24,8 +24,15 @@ const ExploreList = (props) => {
         owners[user._id] = user.username;
     });
 
+    // Each file has an uploaded-date that needs to be rerendered
+    let date;
+
     // Generating each 'media' node to be displayed in the form
     const mediaNodes = props.media.map(media => {
+        // Parsing the file's uploaded date into a more legible string
+        date = new Date(media.uploadedDate).toDateString();
+
+        // Creating the datastring used to display each image on the form based on each file's data
         datastring = `data:${media.mimetype};base64,` + media.data.toString('base64');
 
         return(
@@ -33,7 +40,7 @@ const ExploreList = (props) => {
                 <h1 className='mediaName' id='mediaName' class='grid-item'> Name: {media.name} </h1>
                 <img src={datastring}  class='grid-item'/>
                 <h3 className='mediaOwner' id='mediaOwner' class='grid-item'> Uploader: {owners[media.owner]} </h3>
-                <h3 className='mediaUploaded' id='mediaUploaded' class='grid-item'> Date Uploaded: {media.uploadedDate} </h3>
+                <h3 className='mediaUploaded' id='mediaUploaded' class='grid-item'> Date Uploaded: {date} </h3>
                 <h3 className='mediaDescription' id='mediaDescription' class='grid-item'> Description: {media.description} </h3>
             </div>
         );

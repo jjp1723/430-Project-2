@@ -1,4 +1,3 @@
-
 $mainColor: green;
 $mainColorDark: darkgreen;
 $mainColorLight: lightGreen;
@@ -14,44 +13,73 @@ html, body {
 }
 
 #logo {
-    height: 40px;
-    width: 40;
-    padding-top: 5px;
+    height: 80px;
+    width: 80px;
     float:left;
-    border-radius: 8px;
 }
 
 nav {
     width: 100%;
-    height: 50px;
+    height: 80px;
     background-color: $mainColorDark;
-}
 
-nav:nth-child(1) {
-    padding-left: 25px;
+    :nth-child(1) {
+        padding-left: 15px;
+    }
 }
 
 .navlink {
-    padding: 5px;
-    padding-top: 12px;
+    padding-top: 22px;
     padding-left: 20px;
-    color: white;
-    font-size: 1.3em;
+    font-size: 2em;
     float: left;
+
+    a {
+        color: white;
+        text-decoration: none;
+        padding: 10px;
+        border-radius: 6px;
+        background-color: $mainColor;
+        transition: background-color 0.2s ease;
+    }
+
+    a:hover {
+        transition: background-color 0.4s ease;
+        background-color: $mainColorLight;
+    }
 }
 
-.navlink a, .navlink a:link, .navlink a:visited, .navlink a:hover, .navlink a:active {
-    color: white;
-    text-decoration: none;
-    padding: 5px;
-    border-radius: 4px;
-    background-color: $mainColor;
-    transition: background-color 0.4s ease;
+.hidden {
+    display: none;
 }
 
-.navlink a:hover {
-    transition: background-color 0.8s ease;
-    background-color: $mainColorLight;
+#mediaMessage {
+    top: 100px;
+    width: 320px;
+    z-index: 200;
+    right: 200px;
+    position: absolute;
+    overflow: hidden;
+
+    h3 {
+        width: 280px;
+        position: absolute;
+        top: 0px;
+        left: 20px;
+        text-align: center;
+    }
+}
+
+#errorBox {
+    height: 150px;
+    width: 320px;
+    z-index:280;
+}
+
+#errorMessage {
+    font-size: 1.6em;
+    font-weight: bold;
+    color: red;
 }
 
 .mainForm {
@@ -68,7 +96,7 @@ nav:nth-child(1) {
 
     label {
         display: inline-block;
-        width: auto;
+        width: 150px;
         margin-right: 10px;
         text-align: right;
         font-size: 1.2em;
@@ -78,20 +106,20 @@ nav:nth-child(1) {
         text-align: center;
         font-size: 1.1em;
         border-radius: 6px;
-        margin:4px;
+        margin: 4 auto;
+    }
 
-        :focus{
-            outline: none;
-            box-shadow: 0px 0px 1px 1px #55acee;
-        }
+    #checkLabel{
+        width: 250px;
     }
 }
 
 .formSubmit {
+    color:white;
     display: block;
     text-align: center;
-    margin: 0 auto;
-    margin-top: 14px;
+    margin: auto;
+    margin-top: 20px;
     font-size: 1.2em;
     width: auto;
     background-color: $mainColor;
@@ -99,64 +127,23 @@ nav:nth-child(1) {
     border-radius: 10px;
     border-color: $mainColor;
     padding: 10px;
-    color: white;
     text-decoration: none;
-
-    :link, :visited, :hover, :active{
-        color: white;
-    }
-
-    :hover {
-        transition: background-color 0.8s ease;
-        background-color: $mainColorLight;
-    }
 }
 
-.hidden {
-    display: none;
-}
-
-#mediaMessage {
-    top: 250px;
-    width: 250px;
-    height: 650px;
-    position: absolute;
-    z-index: 200;
-    right: 0px;
-    overflow: hidden;
-
-    h3 {
-        width: 200px;
-        position: absolute;
-        top: 0px;
-        left: 20px;
-    }
-}
-
-#speech {
-    height: 120px;
-    width: 250px;
-    z-index:300;
-}
-
-#errorMessage {
-    font-size: 1.2em;
-    font-weight: bold;
-    color: red;
-    font-style: italic;
+.formSubmit:hover {
+    transition: background-color 0.8s ease;
+    background-color: $mainColorLight;
 }
 
 #makeMedia {
-    width: 100%;
-    min-width: 600px;
     margin: 0 auto;
-    border: 2px solid $mainColor;
     width: 800px;
-    margin-top:20px;
-    padding:20px;
-    background-color: $mainColorDark;
+    margin-top: 30px;
+    padding: 20px;
+    padding-top: 30px;
     border-radius: 10px;
-    color: white;
+    border: 4px solid $mainColor;
+    background-color: $mainColorDark;
 
     .grid-container{
         display:grid;
@@ -166,49 +153,54 @@ nav:nth-child(1) {
         justify-content: space-evenly;
     }
 
-    label {
-        width: auto;
-        margin-left: 20px;
-        font-size: 1.2em;
-        float: left;
-        color: white;
-    }
-
-    .makeMediaSubmit {
-        transition: 0.4s ease;
-        display: inline;
-        width: 180px;
-        background-color: $mainColor;
-        border-radius: 2px;
-        color: white;
-        text-decoration: none;
-        font-size: 1.2em;
-    
-        :link, :visited, :hover, :active{
-            color: white;
-        }
-    
-        :hover {
-            transition: 0.4s ease;
-            background-color: $mainColorLight;
-        }
-    }
-
     .grid-item{
         justify-content: center;
     }
+
+    label {
+        width: auto;
+        margin-right: 20px;
+        font-size: 1.6em;
+    }
+}
+
+.makeMediaSubmit {
+    width: auto;
+    display: inline;
+    text-decoration: none;
+    text-align: center;
+    margin: auto;
+    padding: 4px;
+    font-size: 1.2em;
+    color:white;
+    border-color: $mainColor;
+    border-radius: 10px;
+    background-color: $mainColor;
+    transition: background-color 0.4s ease;
+}
+
+.makeMediaSubmit:hover {
+    transition: 0.4s ease;
+    background-color: $mainColorLight;
+}
+
+h3.emptyMedia {
+    margin: auto;
+    text-align: center;
+    font-size: 2em;
 }
 
 #media, #explore {
     width: 80%;
-    min-width: 400px;
-    text-align: center;
-    border: 2px solid $mainColor;
-    border-radius: 10px;
-    background-color: darkslategray;
-    margin: 0 auto;
+    max-width: 820px;
+    margin: auto;
     margin-top: 40px;
+    margin-bottom: 40px;
     padding: 10px;
+    text-align: center;
+    border-radius: 10px;
+    border: 4px solid $mainColor;
+    background-color: darkslategray;
 
     img{
         max-width: 100%;
@@ -218,51 +210,18 @@ nav:nth-child(1) {
     #mediaItem{
         margin-top: 20px;
         padding-bottom: 20px;
-        border: 2px solid $mainColor;
+        border: 4px solid $mainColor;
         border-radius: 4px;
         background-color: gray;
     }
-}
 
-.media {
-    width: 95%;
-    margin: 20px auto;
-    border: 2px solid $mainColorDark;
-    border-radius: 10px;
-    background-color: gray;
-    padding: 10px;
-    min-height:60px;
-    overflow: hidden;
-    text-align: left;
-
-    :hover {
-        transition: border-color 0.2s ease-out;
-        border-color: rgba(255,255,255, 0.8);
-        transition: background-color 2.6s ease-out;
-        background-color: #66bfff;
+    button{
+        border-radius: 6px;
     }
 
-    :first-child {
-        margin-top: 10px;
+    button:hover {
+        transition: 0.2s ease;
+        color:white;
+        background-color: black;
     }
-
-    :last-child {
-        margin-bottom:10px;
-    }
-}
-
-h3.emptyMedia {
-    width: 400px;
-    font-size: 1.5em;
-    margin: 0 auto;
-    text-align: center;
-    margin-top: 18px;
-}
-
-h3.mediaName {
-    float:left;
-    width: 200px;
-    font-weight: bold;
-    padding-left: 65px;
-    font-size: 1.5em;
 }
